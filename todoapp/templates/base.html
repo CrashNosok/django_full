@@ -1,0 +1,60 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static "base/css/styles.css" %}">
+    {% block extend_static %}
+      
+    {% endblock extend_static %}
+    <title>{% block title %}my site{% endblock title %}</title>
+</head>
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="side_bar col">
+        {% block side_bar %}
+          {% if user.is_authenticated %}
+            <p>{{ user.first_name }}</p>
+            <img src="{{ user.profile.avatar.url }}" class="img-fluid user_avatar">
+            <ul>
+              <li><a href="#">профиль</a></li>
+              <li><a href="{% url "tasks:create_task" %}">добавить задачу</a></li>
+              <li><a href="{% url "tasks:list" %}">задачи</a></li>
+              <li><a href="{% url "edit" %}">Изменить профиль</a></li>
+              <li><a href="{% url "password_change" %}">Изменить пароль</a></li>
+              <li><a href="{% url "logout" %}">выйти</a></li>
+            </ul>
+          {% endif %}
+        {% endblock %}
+      </div>
+
+        <div class="main_content col-8">  
+          {% if messages %}
+            <div class="row">
+              <ul class="messages">
+                  {% for message in messages %}
+                  <li class="alert alert-{{ message.tags }}">{{ message }}
+                    <a href="#" class="close">x</a>
+                  </li>
+                  {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+          {% block content %}
+            bla bla bla
+          {% endblock content %}
+        </div>
+
+      </div>
+  </div>
+</body>
+<script src="{% static 'base/js/del_alert.js' %}"></script>
+
+{% block javascript %}
+{% endblock javascript %}
+</html>

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extend_static %}
+{% endblock extend_static %}
+
+{% block title %}Задача{{ object.id }}{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>Задача</h1>
+        <p><b>Описание</b>: {{ object.description }}</p>
+        <ul>
+            <li>Задача
+                {{ object.is_completed|yesno:"выполнена,ещё не выполнена" }}
+            </li>
+            <li>Создана: {{ object.created|date:"Y b d H:i" }}</li>
+            <li>Последнее изменение: {{ object.updated|date:"Y b d H:i" }}</li>
+            <li><i class="far fa-edit"></i>&nbsp;<a href="{% url "tasks:edit" pk=object.pk %}">Редактировать</a></li>
+
+        </ul>
+        <a href="{% url "tasks:list" %}">Назад к списку</a>
+    </div>
+{% endblock %}

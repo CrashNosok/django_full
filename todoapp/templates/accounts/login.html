@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Войдите{% endblock title %}
+
+{% block extend_static %}
+
+  <link rel="stylesheet" href="{% static 'accounts/css/login.css' %}">
+  
+{% endblock extend_static %}
+
+{% block content %}
+<div class="container">
+
+    <h1>Вход</h1>
+    <p>введите логин/пароль:</p>
+    <form action="{% url 'login' %}" method="POST" class="login">
+        {{ form.as_p }}
+        {% csrf_token %}
+        <button type="submit">Войти</button>
+    </form>
+</div>
+
+{% endblock %}

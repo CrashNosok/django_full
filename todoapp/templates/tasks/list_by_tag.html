@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% load static %}
+{% load dict_key %}
+
+{% block extend_static %}
+  <link rel="stylesheet" href="{% static 'tasks/css/styles.css' %}">
+{% endblock extend_static %}
+
+{% block title %}
+  task list
+{% endblock title %}
+
+{% block content %}
+  
+  {% if tag %}
+    <h1>Текущие задачи с тэгом "{{ tag.name }}"</h1>
+    <p><i class="fa fa-download"></i>&nbsp;<a href="{% url 'tasks:export_by_tag' tag.slug %}">экспорт</a></h1>
+  {% else %}
+    <h1>Все текущие задачи</h1>
+    <p><i class="fa fa-download"></i>&nbsp;<a href="{% url 'tasks:export' %}">экспорт</a></h1>
+  {% endif %}
+
+
+    {% for t in all_tags %}
+        {% if forloop.first %}<ul class="list-inline">
+            <li class="list-inline-item">тэги:</li>
+        {% endif %}
+        <li class="list-inline-item">
+        {% if t.pk == tag.pk %}
+            <a href="{% url "tasks:list" %}">
+            <span class="badge badge-success">{{ t.name }}</span>
+        {% else %}
+            <a href="{% url "tasks:list_by_tag" t.slug %}">
+            <span class="badge badge-info">{{ t.name }}</span>
+        {% endif %}
+        </a>
+        </li>
+        {% if forloop.last %}</ul>{% endif %}
+    {% endfor %}
+ 
+  <hr/>
+
+  <ul id="todo-list">
+  {% for task in tasks %}
+
+    {% if task.is_completed %}
+    <li class="completed list_item">
+      <input class='checkbox' data-uid={{ task.id }} type='checkbox' disabled='disabled' checked='checked'/>
+    {% else %}
+    <li class="list_item">
+      <input class='checkbox in_progress' data-uid={{ task.id }} type='checkbox' />
+    {% endif %}
+    
+    <span>{{ forloop.counter }}</span>
+    
+    {% if task.priority == task.PRIORITY_HIGH %}
+      <span class="badge badge-pill badge-danger">&nbsp;</span>
+    {% elif task.priority == task.PRIORITY_MEDIUM %}
+      <span class="badge badge-pill badge-secondary">&nbsp;</span>
+    {% elif task.priority == task.PRIORITY_LOW %}
+      <span class="badge badge-pill badge-success">&nbsp;</span>
+    {% endif %}
+
+      <a href={% url "tasks:details" task.id %}>{{ task }}</a>
+
+      <div class="tags_for_task">
+        {% for tag_for_task in tags_dict|keyvalue:task.description %}
+          <span>{{ tag_for_task }}</span>
+        {% endfor %}
+      </div>
+      
+
+      
+
+      <!-- <a class="remove" href="/api/delete/{{ task.id }}">X</a> -->
+      {% if tag %}
+        <a class="remove" href="{% url 'tasks:delete_task_tag' task.id tag.slug %}">X</a>
+      {% else %}
+      <a class="remove" href="{% url 'tasks:delete_task' task.id %}">X</a>
+      {% endif %}
+
+      <hr/>
+    </li>
+  {% endfor %}
+  </ul>
+
+</div>
+{% endblock content %}
+
+{% block javascript %}
+  <script src="{% static 'tasks/js/script.js' %}"></script>
+{% endblock javascript %}

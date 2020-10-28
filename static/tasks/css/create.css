@@ -1,0 +1,23 @@
+.center {
+    max-width: 60%;
+}
+
+.add_form {
+    display: flex;
+    justify-content: center;
+}
+
+.add_form input[type=text] {
+    border: 2px solid black;
+}
+
+.add_form button {
+    color: white;
+    background-color: black;
+    width: 35%;
+    border-radius: 5px;
+}
+
+.center h1 {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}

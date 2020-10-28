@@ -1,0 +1,19 @@
+.container {
+    max-width: 50%;
+}
+
+.list_item {
+    position: relative;
+}
+
+.remove {
+    position: absolute;
+    right: 0;
+}
+
+.tags_for_task {
+    display: inline-block;
+    font-size: 11px;
+    color: blueviolet;
+    margin-left: 10%;
+}

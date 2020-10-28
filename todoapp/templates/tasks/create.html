@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}create task{% endblock title %}
+
+{% block extend_static %}
+<link rel="stylesheet" href="{% static 'tasks/css/create.css' %}">
+{% endblock extend_static %}
+
+
+{% block content %}
+  <div class="container center">
+    <h1>Создать задачу</h1>
+    <form action="{% url 'tasks:create_task' %}" method="POST">
+        {% csrf_token %}
+        <div class="add_form">
+          {{ form }}
+          <button class="add" type="submit">+</button>
+        </div>
+    </form>
+  </div>
+{% endblock content %}
+
+
+{% block javascript %}
+<script src="{% static 'tasks/js/create_task.js' %}"></script>
+{% endblock javascript %}

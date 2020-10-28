@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}publisher{% endblock title %}
+
+{% block extend_static %}
+
+{% endblock extend_static %}
+
+
+{% block content %}
+<h2>Publishers</h2>
+<ul>
+    {% for publisher in publishers %}
+        <li>{{ publisher.name }}</li>
+    {% endfor %}
+</ul>
+
+<h2>Tasks</h2>
+<ul>
+    {% for task in tasks %}
+        <li>{{ task.description }}</li>
+    {% endfor %}
+</ul>
+{% endblock content %}
+
+
+{% block javascript %}
+
+{% endblock javascript %}
