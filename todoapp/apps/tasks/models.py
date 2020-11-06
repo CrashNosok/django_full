@@ -32,6 +32,9 @@ class TodoItem(models.Model):
         "Приоритет", choices=PRIORITY_CHOICES, default=PRIORITY_MEDIUM
     )
     tags = TaggableManager(through=RuTaggedItem)
+    trello_id_board = models.CharField(max_length=50, blank=True, null=True)
+    trello_id_card = models.CharField(max_length=50, blank=True, null=True)
+
 
     def __str__(self):
         return self.description.lower()

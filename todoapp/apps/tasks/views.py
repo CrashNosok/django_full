@@ -16,9 +16,11 @@ from django.core.mail import send_mail
 from django.conf import settings
 
 from tasks.models import TodoItem, Publisher
-from tasks.forms import AddTaskForm, TodoItemExportForm
+from tasks.forms import AddTaskForm, TodoItemExportForm, TodoItemImportTrelloForm
 
 from taggit.models import Tag
+
+from trello import TrelloClient
 
 
 def get_task_by_id(task_id):
@@ -144,6 +146,18 @@ class CompleteTaskView(LoginRequiredMixin, View):
     
         task.is_completed = True
         task.save()
+
+        try:
+            client = TrelloClient(api_key=request.user.profile.trello_api_key, api_secret=request.user.profile.trello_api_secret)
+            desc = client.get_board(task.trello_id_board)
+        except: 
+            return Http404('Wrong reqest')
+
+        # или тут -2 будет
+        right_list = desc.list_lists()[-2]
+        card = client.get_card(task.trello_id_card)
+        card.change_list(right_list.id)
+
         return HttpResponse('OK')
 
 
@@ -281,6 +295,44 @@ class TaskExportView(LoginRequiredMixin, View):
         if 'tag_slug' in kwargs:
             return render(request, "tasks/export.html", {"form": form, 'tag': kwargs['tag_slug']})
         return render(request, "tasks/export.html", {"form": form})
+
+
+class ImportFromTrello(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        form = TodoItemImportTrelloForm(request.POST, )
+
+        if form.is_valid():
+            data = form.cleaned_data
+            board_id = data['trello_id_board']
+
+            try:
+                client = TrelloClient(api_key=request.user.profile.trello_api_key, api_secret=request.user.profile.trello_api_secret)
+                desc = client.get_board(board_id)
+            except: 
+                return render(request, 'tasks/import_trello.html', {
+                    'form': form,
+                    'error': 'check your api key and api secret and id board'
+                })
+            left_list = desc.list_lists()[0]
+            cards = left_list.list_cards()
+            for card in cards:
+                t = TodoItem(description=card.name, trello_id_board=board_id, trello_id_card=card.id)
+                t.owner = request.user
+                t.save()
+
+        return redirect(reverse('tasks:list'))
+        # return render(request, 'tasks/import_trello.html', {'form': form})
+
+
+    def get(self, request, *args, **kwargs):
+        # проверка, введён ли key. secret
+        trello_api_key = request.user.profile.trello_api_key
+        trello_api_secret = request.user.profile.trello_api_secret
+        if not trello_api_key or not trello_api_secret or len(trello_api_key) != 32 or len(trello_api_secret) != 64:
+            return redirect(reverse('edit'))
+        form = TodoItemImportTrelloForm()
+        return render(request, 'tasks/import_trello.html', {'form': form})
+
 
 
 def tasks_by_tag(request, tag_slug=None):

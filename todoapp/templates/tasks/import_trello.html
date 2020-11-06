@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Импорт из трелло{% endblock %}
+
+{% block content %}
+  <h1>Импорт из трелло</h1>
+  {% if error %}
+    <p style="color: red;">{{ error }}</p>
+  {% endif %}
+  <p>Введите id доски из trello (из её левой таблицы будут импортированы все задачи)</p>
+  <form action="." method="post">
+    {{ form.as_p }}
+    {% csrf_token %}
+    <p><button class="add" type="submit">Жмяк</button></p>
+  </form>
+{% endblock %}

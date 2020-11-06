@@ -34,6 +34,8 @@ urlpatterns = [
     path('export/', views.TaskExportView.as_view(), name='export'),
     path('export/<str:tag_slug>/', views.TaskExportView.as_view(), name='export_by_tag'),
 
+    path('import-from-trello/', views.ImportFromTrello.as_view(), name='trello_import'),
+
 
     # path('add-task/', views.add_task, name='add_task'),
     path('publisher/', views.PublisherView.as_view(), name='publisher'),

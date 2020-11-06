@@ -19,6 +19,8 @@
     <h1>Все текущие задачи</h1>
     <p><i class="fa fa-download"></i>&nbsp;<a href="{% url 'tasks:export' %}">экспорт</a></h1>
   {% endif %}
+  <p><i class="fa fa-file-import"></i>&nbsp;<a href="{% url 'tasks:trello_import' %}">импорт из trello</a></h1>
+
 
 
     {% for t in all_tags %}

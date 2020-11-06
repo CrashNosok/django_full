@@ -43,3 +43,11 @@ class TodoItemExportForm(forms.Form):
     prio_med = forms.BooleanField(label='средней важности', initial=True, required=False)
     prio_low = forms.BooleanField(label='низкой важности', initial=False, required=False)
 
+
+class TodoItemImportTrelloForm(forms.ModelForm):
+    class Meta:
+        model = TodoItem
+        fields = ('trello_id_board',)
+        labels = {
+            'trello_id_board': 'id доски', 
+        }

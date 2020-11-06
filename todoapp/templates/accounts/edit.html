@@ -1,16 +1,26 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}
 Изменить профиль
 {% endblock title %}
 
+{% block extend_static %}
+      
+{% endblock extend_static %}
+
 {% block content %}
   <h1>Изменить профиль</h1>
   <p>Используйте форму ниже чтобы что-то поменять в профиле:</p>
-  <form action="{% url 'edit' %}" method="post" enctype="multipart/form-data">
+  <form action="{% url 'edit' %}" method="post" enctype="multipart/form-data" onsubmit="return validateMyForm();">
     {{ user_form.as_p }}
     {{ profile_form.as_p }}
     {% csrf_token %}
-    <button type="submit">Сохранить</button>
+    <button type="submit" id="save_button">Сохранить</button>
   </form>
 {% endblock %}
+
+{% block javascript %}
+<script src="{% static 'accounts/js/trello_attention.js' %}"></script>
+
+{% endblock javascript %}
