@@ -36,6 +36,9 @@ urlpatterns = [
 
     path('import-from-trello/', views.ImportFromTrello.as_view(), name='trello_import'),
 
+    # check sentry
+    # path('sentry-debug/', views.trigger_error),
+
 
     # path('add-task/', views.add_task, name='add_task'),
     path('publisher/', views.PublisherView.as_view(), name='publisher'),

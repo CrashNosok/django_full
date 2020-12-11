@@ -1,5 +1,5 @@
 from django.contrib import admin
-from tasks.models import TodoItem, Publisher
+from tasks.models import TodoItem, Publisher, TagCount
 
 # admin.site.register(TodoItem)
 
@@ -11,3 +11,7 @@ class TodoItemAdmin(admin.ModelAdmin):
 @admin.register(Publisher)
 class PublisherAdmin(admin.ModelAdmin):
     list_display = ('name', 'city', 'website')
+
+@admin.register(TagCount)
+class TagCountAdmin(admin.ModelAdmin):
+    list_display = ('tag_slug', 'tag_name', 'tag_id', 'tag_count',)

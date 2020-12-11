@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 from pathlib import Path
 import os, sys
 
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -30,7 +33,7 @@ SECRET_KEY = 'k8)!#uweg5p(dx7vxe+g7r*o@_07=9j70d@o8!i)8p34^3%9xz'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -45,9 +48,11 @@ INSTALLED_APPS = [
     'tasks.apps.TasksConfig',
     'accounts.apps.AccountsConfig',
     'taggit',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -147,3 +152,16 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 EMAIL_HOST_PASSWORD = 'qwerty123'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+
+INTERNAL_IPS = ['127.0.0.1', 'localhost']
+
+if not DEBUG:
+    sentry_sdk.init(
+        dsn="https://04d559511e13429f946993f1f7f29548@o478230.ingest.sentry.io/5520411",
+        integrations=[DjangoIntegration()],
+        traces_sample_rate=1.0,
+
+        # If you wish to associate users to errors (assuming you are using
+        # django.contrib.auth) you may enable sending PII data.
+        send_default_pii=True
+    )

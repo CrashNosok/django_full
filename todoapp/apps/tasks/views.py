@@ -22,6 +22,10 @@ from taggit.models import Tag
 
 from trello import TrelloClient
 
+from django.db.models import Count
+from django.db.models import Case
+from django.db.models import When
+
 
 def get_task_by_id(task_id):
     try:
@@ -49,8 +53,20 @@ def filter_tasks(tasks, tag):
 
 
 @login_required
-def index(request):
-    return HttpResponse('hello')
+def index(request):    
+    # counts = {t.name: t.taggit_taggeditem_items.count() for t in Tag.objects.all()}
+    counts = Tag.objects.annotate(total_tasks=Count('todoitem')).order_by('-total_tasks')
+    counts = {c.name: c.total_tasks for c in counts}
+    # test = TodoItem.objects.all().annotate(
+    #     count_tags=Count(Case(When(..., then=1)))
+    # )
+
+    return render(request, 'tasks/index.html', {
+        'counts': counts,
+    })
+
+# def trigger_error(request):
+#     a = 1 / 0
 
 
 '''
@@ -334,7 +350,7 @@ class ImportFromTrello(LoginRequiredMixin, View):
         return render(request, 'tasks/import_trello.html', {'form': form})
 
 
-
+@login_required
 def tasks_by_tag(request, tag_slug=None):
     u = request.user
     tasks = TodoItem.objects.filter(owner=u).all()
@@ -342,7 +358,7 @@ def tasks_by_tag(request, tag_slug=None):
     tags_lst = []
     for t in tasks:
         tags_lst.append(list(t.tags.all()))
-    
+        
     tags_dict = {t.description: tag_lst for t, tag_lst in zip(tasks, tags_lst)}
     all_tags = filter_tags(tags_lst)
 
